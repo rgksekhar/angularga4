@@ -1,0 +1,5 @@
+{
+  "name": "Angular Image Gallery with Analytics",
+  "description": "A sample Angular application that displays a paginated list of images, allows filtering by page, and integrates GA4 analytics to track user interactions. The tracked events are displayed in real-time.",
+  "requestFramePermissions": []
+}

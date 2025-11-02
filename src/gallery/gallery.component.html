@@ -1,0 +1,88 @@
+<div class="min-h-screen p-4 sm:p-6 lg:p-8">
+  <div class="max-w-7xl mx-auto">
+    
+    <!-- Header -->
+    <header class="pb-6 border-b border-slate-200">
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <h1 class="text-3xl font-bold text-slate-900">Image Gallery</h1>
+          <p class="mt-1 text-slate-500">Paginated gallery with GA4 Analytics Tracking</p>
+        </div>
+        <div class="flex items-center gap-4">
+          <label for="page-select" class="text-sm font-medium text-slate-700">Go to page:</label>
+          <select id="page-select"
+                  [ngModel]="currentPage()"
+                  (change)="onPageSelect($event)"
+                  class="block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm">
+            @for(page of pageNumbers(); track page) {
+              <option [value]="page">{{ page }}</option>
+            }
+          </select>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
+      
+      <!-- Image Grid Section -->
+      <div class="lg:col-span-2">
+        @if (loading()) {
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            @for (_ of [].constructor(itemsPerPage()); track $index) {
+              <div class="aspect-square bg-slate-200 rounded-lg animate-pulse"></div>
+            }
+          </div>
+        } @else if (error()) {
+          <div class="flex flex-col items-center justify-center p-12 bg-red-50 border border-red-200 rounded-lg text-center">
+            <p class="text-red-700 font-semibold">An Error Occurred</p>
+            <p class="text-red-600 mt-1">{{ error() }}</p>
+          </div>
+        } @else {
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            @for (image of images(); track image.id) {
+              <div class="group relative aspect-square overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
+                <img [ngSrc]="image.download_url"
+                     [width]="300"
+                     [height]="300"
+                     [alt]="'Image by ' + image.author"
+                     class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                     priority/>
+                <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white p-2 text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  By: {{ image.author }}
+                </div>
+              </div>
+            }
+          </div>
+        }
+
+        <!-- Pagination Controls -->
+        <div class="mt-8">
+          <app-pagination [currentPage]="currentPage()" [totalPages]="totalPages()" (pageChange)="onPageChange($event)"></app-pagination>
+        </div>
+      </div>
+
+      <!-- Analytics Log Section -->
+      <div class="lg:col-span-1">
+        <div class="bg-white rounded-lg shadow-md p-4 sticky top-8">
+          <h2 class="text-lg font-semibold flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 3a1 1 0 000 2v8a1 1 0 001 1h1.586l.707.707a1 1 0 001.414 0L8.414 14H15a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1-1zm3 4a1 1 0 100 2h8a1 1 0 100-2H6z" clip-rule="evenodd" /></svg>
+            GA4 Events Log (This Session)
+          </h2>
+          <div class="mt-4 bg-slate-800 text-white rounded-md p-3 max-h-96 overflow-y-auto text-xs font-mono">
+            @if (analyticsLog().length === 0) {
+              <p class="text-slate-400">No events tracked yet...</p>
+            } @else {
+              @for (event of analyticsLog(); track $index) {
+                <div class="border-b border-slate-700 py-2 last:border-b-0">
+                  <p><span class="text-cyan-400 font-bold">{{ event.name }}</span> - <span class="text-slate-400">{{ event.timestamp.toLocaleTimeString() }}</span></p>
+                  <pre class="text-slate-300 whitespace-pre-wrap">{{ prettyPrintJson(event.params) }}</pre>
+                </div>
+              }
+            }
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>

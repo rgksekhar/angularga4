@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,7 +21,9 @@
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
 
-    gtag('config', 'G-XXXXXXXXXX');
+    gtag('config', 'G-XXXXXXXXXX', {
+      send_page_view: false // Disable automatic page view tracking
+    });
   </script>
 <script type="importmap">
 {
@@ -38,7 +39,9 @@
     "@angular/compiler": "https://next.esm.sh/@angular/compiler@^20.3.9?external=rxjs",
     "@angular/platform-browser": "https://next.esm.sh/@angular/platform-browser@^20.3.9?external=rxjs",
     "@angular/core": "https://next.esm.sh/@angular/core@^20.3.9?external=rxjs",
-    "@angular/forms": "https://next.esm.sh/@angular/forms@^20.3.9?external=rxjs"
+    "@angular/core/rxjs-interop": "https://next.esm.sh/@angular/core@^20.3.9/rxjs-interop?external=rxjs",
+    "@angular/forms": "https://next.esm.sh/@angular/forms@^20.3.9?external=rxjs",
+    "@angular/router": "https://next.esm.sh/@angular/router@^20.3.9?external=rxjs"
   }
 }
 </script>
